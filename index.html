@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPTV Player</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Startseite und Detailseite werden per JS aufgebaut -->
+<div id="home" class="screen"></div>
+<div id="detail" class="screen"></div>
+
+<!-- Browse: Live / Filme / Serien -->
+<div id="main" class="screen">
+  <div id="top">
+    <button id="btn-home" data-nav>Start</button>
+    <button class="tab" id="tab-live" data-nav data-tab="live">Live TV</button>
+    <button class="tab" id="tab-vod" data-nav data-tab="vod">Filme</button>
+    <button class="tab" id="tab-series" data-nav data-tab="series">Serien</button>
+    <button id="btn-man" data-nav>Kategorien</button>
+    <button id="btn-pl" data-nav>Playlists</button>
+    <div id="title">Kategorie wählen</div>
+    <span id="pl-name"></span>
+    <input id="search" data-nav type="text" placeholder="Suchen …">
+  </div>
+  <div id="body">
+    <div id="cats" class="vl"></div>
+    <div id="grid" class="vl"></div>
+  </div>
+</div>
+
+<!-- Playlist-Verwaltung -->
+<div id="pls" class="screen page">
+  <h1>Playlists</h1>
+  <div id="pl-list"></div>
+  <div class="row">
+    <button id="add-x" data-nav>Xtream hinzufügen</button>
+    <button id="add-m" data-nav>M3U-URL hinzufügen</button>
+    <button id="pl-back" data-nav>Zurück</button>
+  </div>
+  <label>TMDB-API-Key (optional, für „Im Trend“ auf der Startseite – oder in config.js eintragen)</label>
+  <input id="tm-key" data-nav type="text" placeholder="TMDB API-Key">
+</div>
+
+<!-- Playlist bearbeiten -->
+<div id="edit" class="screen page">
+  <h1 id="edit-title">Playlist</h1>
+  <label>Name</label>
+  <input id="f-name" data-nav type="text">
+  <label id="l-server">Server-URL</label>
+  <input id="f-server" data-nav type="text" placeholder="http://server:port">
+  <div class="xt">
+    <label>Benutzername</label>
+    <input id="f-user" data-nav type="text">
+    <label>Passwort</label>
+    <input id="f-pass" data-nav type="text">
+  </div>
+  <div class="row">
+    <button id="f-save" data-nav>Speichern</button>
+    <button id="f-cancel" data-nav>Abbrechen</button>
+    <button id="f-del" data-nav>Löschen</button>
+  </div>
+</div>
+
+<!-- Player -->
+<div id="player" class="screen">
+  <video id="vid"></video>
+  <object id="av" type="application/avplayer"></object>
+  <div id="sub"></div>
+  <div id="busy"></div>
+  <div id="skipbtn"></div>
+  <div id="p-top"><div id="p-title"></div><div id="p-eng"></div></div>
+  <div id="ctl">
+    <div id="bar"><div id="bar-fill"></div><div id="bar-knob"></div></div>
+    <div id="t-row"><span id="t-cur"></span><span id="live-badge">● LIVE</span><span id="t-dur"></span></div>
+    <div id="pb-row">
+      <button id="pb-play" data-pb="play">Pause</button>
+      <button data-pb="back">-10 s</button>
+      <button data-pb="fwd">+10 s</button>
+      <button data-pb="skip" id="pb-skip" style="display:none">Intro überspringen</button>
+      <button data-pb="next" id="pb-next" style="display:none">Nächste Folge</button>
+      <button data-pb="audio">Tonspur</button>
+      <button data-pb="sub">Untertitel</button>
+      <button data-pb="src">Quelle</button>
+    </div>
+  </div>
+  <div id="menu"><div id="menu-t"></div><div id="menu-list"></div></div>
+</div>
+
+<div id="status"></div>
+<div id="boot"></div>
+
+<script>
+// Fehler sichtbar machen statt schwarzem Bildschirm
+function bootErr(m) { var b = document.getElementById('boot'); if (b) { b.style.display = 'block'; b.textContent = 'Fehler: ' + m; } }
+window.onerror = function (m, s, l) { bootErr(m + ' (' + String(s || '').split('/').pop() + ':' + l + ')'); };
+window.addEventListener('unhandledrejection', function (e) { bootErr(String(e.reason && e.reason.message || e.reason)); });
+// Samsung-WebAPIs nur nachladen (blockiert den Start nicht), falls vorhanden
+if (typeof webapis === 'undefined') {
+  var w = document.createElement('script'); w.src = '$WEBAPIS/webapis/webapis.js'; w.async = true; w.onerror = function () {};
+  document.head.appendChild(w);
+}
+</script>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="ui.js"></script>
+<script src="player.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
